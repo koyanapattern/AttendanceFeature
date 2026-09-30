@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koyana Pattern Academy - Attendance Portal</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Chart.js for Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- html2pdf.js for Clean PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            koyana: {
+              50: '#f0f5ff',
+              100: '#e0ebfe',
+              600: '#2563eb',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              gold: '#d97706',
+              goldHover: '#b45309'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom scrollbar styling */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    /* Print Specific Styling to ensure pixel-perfect PDF export */
+    .pdf-template {
+      width: 790px !important;
+      background: #ffffff !important;
+      color: #0f172a !important;
+      font-family: 'Inter', sans-serif !important;
+      box-sizing: border-box !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen pb-12">
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
+    
+    <!-- Koyana Pattern Academy Header -->
+    <header class="bg-gradient-to-r from-koyana-900 via-koyana-800 to-indigo-950 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden border-b-4 border-amber-500">
+      <!-- Decorative background watermark -->
+      <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl font-black select-none text-white">
+        KPA
+      </div>
+
+      <div class="relative z-10 flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center gap-4">
+          <!-- Logo Badge -->
+          <div class="w-14 h-14 bg-amber-500 text-koyana-900 rounded-2xl flex items-center justify-center font-black text-2xl shadow-lg border-2 border-amber-300 transform -rotate-2">
+            KPA
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">KOYANA PATTERN ACADEMY</h1>
+              <span class="bg-amber-500/20 text-amber-300 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-amber-500/30">Official</span>
+            </div>
+            <p class="text-indigo-200 text-xs sm:text-sm font-medium mt-0.5">Excellence in Academic & Competitive Education • Student Attendance Portal</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="openStudentSearchModal()" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded-xl text-xs font-semibold backdrop-blur-md transition flex items-center gap-2 shadow">
+            <i class="fa-solid fa-magnifying-glass text-amber-400"></i>
+            <span>Search Student Profile</span>
+          </button>
+          <button onclick="exportClassReportPDF()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-lg flex items-center gap-2">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span>Export Official PDF Report</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Panel 1: Student Admission Form -->
+      <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b pb-3 mb-4">
+            <h2 class="text-sm font-bold text-koyana-900 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-user-plus text-amber-500"></i>
+              New Student Admission
+            </h2>
+            <span class="text-[11px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-mono">Roll-scoped</span>
+          </div>
+
+          <form id="studentForm" onsubmit="addStudent(event)" class="space-y-3.5">
+            <div>
+              <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-1">Roll Number</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-id-badge text-xs"></i></span>
+                <input type="text" id="rollNo" required placeholder="e.g. KPA-101" class="w-full border border-slate-300 rounded-xl pl-9 p-2.5 text-sm focus:ring-2 focus:ring-koyana-600 focus:border-koyana-600 outline-none transition">
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-1">Student Full Name</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user text-xs"></i></span>
+                <input type="text" id="studentName" required placeholder="e.g. Rahul Patil" class="w-full border border-slate-300 rounded-xl pl-9 p-2.5 text-sm focus:ring-2 focus:ring-koyana-600 focus:border-koyana-600 outline-none transition">
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-1">Parent's WhatsApp Mobile Number</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-brands fa-whatsapp text-xs"></i></span>
+                <input type="text" id="studentPhone" placeholder="e.g. 919876543210" class="w-full border border-slate-300 rounded-xl pl-9 p-2.5 text-sm focus:ring-2 focus:ring-koyana-600 focus:border-koyana-600 outline-none transition">
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-1">Admission Date (Effective From)</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-calendar-day text-xs"></i></span>
+                <input type="date" id="joinedDate" required class="w-full border border-slate-300 rounded-xl pl-9 p-2.5 text-sm outline-none bg-slate-50 focus:ring-2 focus:ring-koyana-600">
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Student will not appear in registers prior to this date.</p>
+            </div>
+
+            <button type="submit" class="w-full bg-koyana-800 hover:bg-koyana-900 text-white font-bold py-3 rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm mt-2">
+              <i class="fa-solid fa-plus-circle"></i>
+              <span>Register New Student</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Academy Quick Summary Widget -->
+        <div class="mt-6 pt-4 border-t border-slate-100 bg-slate-50 p-3.5 rounded-xl text-xs space-y-2">
+          <div class="flex justify-between text-slate-600">
+            <span>Total Enrolled Database:</span>
+            <span id="widgetTotalEnrolled" class="font-bold text-slate-800">0</span>
+          </div>
+          <div class="flex justify-between text-slate-600">
+            <span>Active Today:</span>
+            <span id="widgetActiveToday" class="font-bold text-emerald-600">0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 2: Register & Bulk Actions -->
+      <section class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col justify-between">
+        <div>
+          <!-- Register Controls Header -->
+          <div class="flex flex-wrap justify-between items-center gap-3 mb-4 pb-4 border-b border-slate-100">
+            <div>
+              <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">Active Register Date</label>
+              <div class="flex items-center gap-2">
+                <input type="date" id="attendanceDate" onchange="onDateChange()" class="border border-slate-300 rounded-xl p-2 text-sm font-semibold outline-none bg-slate-50 focus:ring-2 focus:ring-koyana-600">
+                <button onclick="setTodayDate()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-2 rounded-xl font-medium border transition">Today</button>
+              </div>
+            </div>
+
+            <!-- Quick Bulk Actions -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <button onclick="bulkMark('Present')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold px-3 py-2 rounded-xl border border-emerald-200 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-check text-emerald-600"></i> All Present
+              </button>
+              <button onclick="bulkMark('Absent')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold px-3 py-2 rounded-xl border border-rose-200 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-xmark text-rose-600"></i> All Absent
+              </button>
+              <button onclick="openWhatsAppQueueModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp Absentees
+              </button>
+            </div>
+          </div>
+
+          <!-- Search & Count Bar -->
+          <div class="mb-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="relative w-full sm:w-72">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-search text-xs"></i></span>
+              <input type="text" id="tableSearch" onkeyup="renderTable()" placeholder="Filter by roll or student name..." class="w-full border border-slate-200 rounded-xl pl-9 p-2 text-xs outline-none focus:border-koyana-600">
+            </div>
+            <span id="activeCountBadge" class="text-xs text-slate-500 font-semibold bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
+              Active Students: 0
+            </span>
+          </div>
+
+          <!-- Student Register Table -->
+          <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-600 text-xs uppercase font-bold tracking-wider border-b border-slate-200">
+                  <th class="p-3">Roll No</th>
+                  <th class="p-3">Student Name</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentTableBody" class="divide-y divide-slate-100 text-sm">
+                <!-- Dynamic Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Table Footer Info -->
+        <div class="mt-4 pt-3 text-[11px] text-slate-400 flex justify-between items-center">
+          <span><i class="fa-solid fa-circle-info text-amber-500 mr-1"></i> Removing a student removes them from this date forward without altering historical registers or roll numbers.</span>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Panel 3: Multi-Duration Visual Analytics & Reports -->
+    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 space-y-6">
+      
+      <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-100 pb-4">
+        <div>
+          <h2 class="text-lg font-bold text-koyana-900 flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-amber-500"></i>
+            Attendance Graphical Insights
+          </h2>
+          <p class="text-xs text-slate-500">Switch analytics time horizons and analyze class participation trends.</p>
+        </div>
+
+        <!-- Duration Switcher Buttons -->
+        <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <button onclick="setAnalyticsPeriod('day')" id="btnPeriodDay" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-koyana-900 transition">Single Day</button>
+          <button onclick="setAnalyticsPeriod('week')" id="btnPeriodWeek" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Week</button>
+          <button onclick="setAnalyticsPeriod('month')" id="btnPeriodMonth" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Month</button>
+          <button onclick="setAnalyticsPeriod('year')" id="btnPeriodYear" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Year</button>
+        </div>
+      </div>
+
+      <!-- Graphical Visualizations -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 flex flex-col items-center">
+          <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3" id="pieChartTitle">Class Participation Ratio</h3>
+          <div class="h-56 w-full flex justify-center items-center">
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+
+        <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 flex flex-col items-center">
+          <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3" id="lineChartTitle">Attendance Rate Trend</h3>
+          <div class="h-56 w-full">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- MODAL 1: Student Search / Individual Profile & Analytics Modal -->
+  <div id="studentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border border-slate-100">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-lg font-bold text-koyana-900 flex items-center gap-2">
+          <i class="fa-solid fa-address-card text-amber-500"></i>
+          Student Deep-Dive Profile
+        </h3>
+        <button onclick="closeStudentModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition">&times;</button>
+      </div>
+
+      <!-- Selector in Modal -->
+      <div class="flex flex-wrap gap-3 items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+        <div class="flex-1 min-w-[200px]">
+          <label class="text-xs font-bold text-slate-500 uppercase block mb-1">Select Student</label>
+          <select id="modalStudentSelect" onchange="renderIndividualStudentReport()" class="w-full border border-slate-300 rounded-xl p-2 text-sm bg-white outline-none focus:ring-2 focus:ring-koyana-600">
+            <!-- Dynamic student options -->
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-slate-500 uppercase block mb-1">Time Horizon</label>
+          <select id="modalTimeframe" onchange="renderIndividualStudentReport()" class="border border-slate-300 rounded-xl p-2 text-sm bg-white outline-none focus:ring-2 focus:ring-koyana-600">
+            <option value="week">Past 7 Days</option>
+            <option value="month">Past 30 Days</option>
+            <option value="year" selected>All Time</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Student Printable Data Region -->
+      <div id="individualStudentPrintArea" class="p-5 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-4">
+        <div class="flex justify-between items-start border-b border-slate-200 pb-3">
+          <div>
+            <h4 class="text-xl font-black text-slate-900" id="indivName">--</h4>
+            <p class="text-xs text-slate-500 mt-0.5">Roll No: <span id="indivRoll" class="font-bold text-slate-700">--</span> | Joined: <span id="indivJoined">--</span></p>
+            <p class="text-xs mt-1 font-semibold" id="indivStatusTag"></p>
+          </div>
+          <div class="text-right">
+            <span id="indivPercent" class="text-3xl font-black text-koyana-800">0%</span>
+            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Attendance Rate</p>
+          </div>
+        </div>
+
+        <!-- Individual Mini Stats Grid -->
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-[10px] text-slate-500 uppercase font-bold block">Total Sessions</span>
+            <span id="indivTotal" class="text-lg font-extrabold text-slate-800">0</span>
+          </div>
+          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-[10px] text-slate-500 uppercase font-bold block text-emerald-600">Present</span>
+            <span id="indivPresent" class="text-lg font-extrabold text-emerald-600">0</span>
+          </div>
+          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-[10px] text-slate-500 uppercase font-bold block text-rose-600">Absent</span>
+            <span id="indivAbsent" class="text-lg font-extrabold text-rose-600">0</span>
+          </div>
+        </div>
+
+        <!-- Attendance Logs Table -->
+        <div>
+          <h5 class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Session History Log</h5>
+          <div class="max-h-48 overflow-y-auto border border-slate-200 rounded-xl bg-white">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead class="bg-slate-100 text-slate-600 uppercase font-bold sticky top-0">
+                <tr>
+                  <th class="p-2.5 border-b">Date</th>
+                  <th class="p-2.5 border-b">Attendance Status</th>
+                </tr>
+              </thead>
+              <tbody id="indivLogsBody" class="divide-y divide-slate-100">
+                <!-- Logs dynamic -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer Buttons -->
+      <div class="flex flex-wrap justify-between items-center gap-2 pt-2">
+        <button onclick="shareIndividualWhatsAppFromModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition flex items-center gap-1.5">
+          <i class="fa-brands fa-whatsapp text-sm"></i> Send Student WhatsApp Report
+        </button>
+        <button onclick="exportIndividualStudentPDF()" class="bg-koyana-800 hover:bg-koyana-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-file-pdf"></i> Download Student PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: WhatsApp Absentees Interactive Queue Modal -->
+  <div id="whatsappQueueModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-md font-bold text-koyana-900 flex items-center gap-2">
+          <i class="fa-brands fa-whatsapp text-emerald-600 text-lg"></i>
+          WhatsApp Absentees Queue
+        </h3>
+        <button onclick="closeWhatsAppQueueModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+      </div>
+
+      <div class="text-center space-y-3 py-2">
+        <p class="text-xs text-slate-600">Send direct WhatsApp attendance alerts to absent students for <strong id="waQueueDate" class="text-slate-800">--</strong>.</p>
+        
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <span class="text-xs font-bold uppercase text-slate-400 block mb-1">Current Student in Queue</span>
+          <h4 id="waQueueStudentName" class="text-lg font-black text-slate-900">--</h4>
+          <p id="waQueueStudentRoll" class="text-xs text-slate-500 font-mono">--</p>
+          <div class="mt-3 flex justify-center gap-2 text-xs">
+            <span id="waQueueProgressBadge" class="bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full">
+              Student 1 of 1
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="skipQueueStudent()" class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition">
+          Skip
+        </button>
+        <button onclick="sendCurrentQueueWhatsApp()" class="w-2/3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow flex items-center justify-center gap-1.5">
+          <i class="fa-brands fa-whatsapp"></i> Send WhatsApp Alert
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Custom Soft Delete Removal Confirmation Modal -->
+  <div id="removeConfirmModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
+      <div class="flex items-center gap-3 text-rose-600 border-b pb-3">
+        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+        <h3 class="text-md font-bold text-slate-900">Confirm Student Removal</h3>
+      </div>
+
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Are you sure you want to discharge <strong id="removeStudentName" class="text-slate-900">--</strong> (<span id="removeStudentRoll" class="font-mono">--</span>) from <strong id="removeEffectiveDate" class="text-rose-600">--</strong> onwards?
+      </p>
+
+      <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-[11px] text-amber-800 space-y-1">
+        <p class="font-bold"><i class="fa-solid fa-shield"></i> Data Integrity Protection:</p>
+        <p>1. Attendance records prior to this date will remain permanently intact.</p>
+        <p>2. Roll numbers will not be modified or re-shuffled.</p>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeRemoveConfirmModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+          Cancel
+        </button>
+        <button id="confirmRemoveBtn" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 transition shadow">
+          Confirm Discharge
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEDICATED OFFICIAL PDF PRINT TEMPLATE (Hidden off-screen, populated dynamically) -->
+  <div class="fixed left-[-9999px] top-[-9999px]">
+    <div id="officialPdfPrintArea" class="pdf-template p-8 space-y-6">
+      
+      <!-- Official Header -->
+      <div class="flex justify-between items-center border-b-2 border-amber-500 pb-4">
+        <div>
+          <h1 class="text-2xl font-black text-blue-950 tracking-tight">KOYANA PATTERN ACADEMY</h1>
+          <p class="text-xs text-slate-600 font-semibold mt-0.5">Karad-Chiplun Road, Patan, Maharashtra • Contact: +91 98765 43210</p>
+          <p class="text-[11px] text-slate-500">Official Student Attendance Record & Academic Verification Report</p>
+        </div>
+        <div class="text-right">
+          <div class="bg-blue-950 text-amber-400 font-black px-3 py-1.5 rounded-lg text-lg inline-block">
+            KPA
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">Certified Document</p>
+        </div>
+      </div>
+
+      <!-- Report Metadata Header Card -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex justify-between items-center text-xs">
+        <div>
+          <span class="text-slate-400 font-bold uppercase block text-[10px]">Report Duration / Scope</span>
+          <strong id="pdfReportScope" class="text-sm text-slate-900 font-extrabold">--</strong>
+        </div>
+        <div>
+          <span class="text-slate-400 font-bold uppercase block text-[10px]">Generated Date</span>
+          <strong id="pdfGeneratedDate" class="text-sm text-slate-800">--</strong>
+        </div>
+        <div>
+          <span class="text-slate-400 font-bold uppercase block text-[10px]">Class Attendance Rate</span>
+          <strong id="pdfClassRate" class="text-sm text-blue-900 font-black">--%</strong>
+        </div>
+      </div>
+
+      <!-- Key Metrics Table Summary -->
+      <div class="grid grid-cols-3 gap-3 text-center text-xs">
+        <div class="border border-slate-200 p-2.5 rounded-lg bg-white">
+          <span class="text-slate-500 block text-[10px] uppercase font-bold">Enrolled Students</span>
+          <strong id="pdfTotalEnrolled" class="text-base text-slate-900">0</strong>
+        </div>
+        <div class="border border-slate-200 p-2.5 rounded-lg bg-white">
+          <span class="text-emerald-600 block text-[10px] uppercase font-bold">Present Count</span>
+          <strong id="pdfTotalPresent" class="text-base text-emerald-600">0</strong>
+        </div>
+        <div class="border border-slate-200 p-2.5 rounded-lg bg-white">
+          <span class="text-rose-600 block text-[10px] uppercase font-bold">Absent Count</span>
+          <strong id="pdfTotalAbsent" class="text-base text-rose-600">0</strong>
+        </div>
+      </div>
+
+      <!-- Attendance Main Table -->
+      <div>
+        <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Student Attendance Register Detail</h3>
+        <table class="w-full text-xs text-left border-collapse border border-slate-300">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 uppercase font-bold text-[10px] border-b border-slate-300">
+              <th class="p-2.5 border-r border-slate-300 w-20">Roll No</th>
+              <th class="p-2.5 border-r border-slate-300">Student Full Name</th>
+              <th class="p-2.5 border-r border-slate-300 w-28">Admission Date</th>
+              <th class="p-2.5 text-center w-28">Status</th>
+            </tr>
+          </thead>
+          <tbody id="pdfTableBody" class="divide-y divide-slate-200">
+            <!-- Dynamic PDF rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Official Signature & Approval Block -->
+      <div class="pt-8 border-t border-slate-200 flex justify-between items-end text-xs">
+        <div class="space-y-1">
+          <p class="font-bold text-slate-800">Attendance Coordinator</p>
+          <p class="text-[10px] text-slate-400">Signature: ______________________</p>
+          <p class="text-[10px] text-slate-400">Date: <span class="pdfCurrentDate">--</span></p>
+        </div>
+        <div class="text-right space-y-1">
+          <p class="font-bold text-slate-800">Principal / Director Seal</p>
+          <p class="text-[10px] text-slate-400">Signature: ______________________</p>
+          <p class="text-[10px] text-slate-400">Koyana Pattern Academy, Patan</p>
+        </div>
+      </div>
+
+      <!-- Computer Generated Footer Notice -->
+      <div class="text-center text-[9px] text-slate-400 border-t border-slate-100 pt-2">
+        This is an official computer-generated document from Koyana Pattern Academy Management System.
+      </div>
+
+    </div>
+  </div>
+
+
+  <script>
+    // System Initial State
+    let students = JSON.parse(localStorage.getItem('kpa_students')) || [
+      { roll: 'KPA-101', name: 'Aarav Patil', phone: '919876543210', joinedDate: '2026-09-01', removedDate: null },
+      { roll: 'KPA-102', name: 'Priya Sharma', phone: '919876543211', joinedDate: '2026-09-01', removedDate: null },
+      { roll: 'KPA-103', name: 'Siddharth Deshmukh', phone: '919876543212', joinedDate: '2026-09-10', removedDate: null },
+      { roll: 'KPA-104', name: 'Ananya Jadhav', phone: '919876543213', joinedDate: '2026-09-15', removedDate: null }
+    ];
+
+    let attendanceData = JSON.parse(localStorage.getItem('kpa_attendance')) || {};
+    let activeAnalyticsPeriod = 'day'; // 'day', 'week', 'month', 'year'
+    let pendingRemoveRoll = null;
+
+    // Set today's date in pickers on startup
+    const todayStr = new Date().toISOString().split('T')[0];
+    document.getElementById('attendanceDate').value = todayStr;
+    document.getElementById('joinedDate').value = todayStr;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      ensureDefaultPresent();
+      renderTable();
+      initCharts();
+    });
+
+    // Storage Saver Helper
+    function saveData() {
+      localStorage.setItem('kpa_students', JSON.stringify(students));
+      localStorage.setItem('kpa_attendance', JSON.stringify(attendanceData));
+    }
+
+    // Non-intrusive Toast Notifications replacing alert()
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      const bg = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-rose-600' : 'bg-koyana-800';
+      const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+
+      toast.className = `${bg} text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto`;
+      toast.innerHTML = `<i class="fa-solid ${icon}"></i><span>${message}</span>`;
+      
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', '-translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function setTodayDate() {
+      document.getElementById('attendanceDate').value = todayStr;
+      onDateChange();
+    }
+
+    // Date Scoping Helper: Checks if student was active on date
+    function isStudentActiveOnDate(student, dateStr) {
+      if (student.joinedDate && dateStr < student.joinedDate) return false;
+      if (student.removedDate && dateStr >= student.removedDate) return false;
+      return true;
+    }
+
+    function ensureDefaultPresent() {
+      const activeDate = document.getElementById('attendanceDate').value;
+      if (!attendanceData[activeDate]) {
+        attendanceData[activeDate] = {};
+      }
+
+      students.forEach(student => {
+        if (isStudentActiveOnDate(student, activeDate)) {
+          if (!attendanceData[activeDate][student.roll]) {
+            attendanceData[activeDate][student.roll] = 'Present';
+          }
+        }
+      });
+      saveData();
+    }
+
+    function onDateChange() {
+      ensureDefaultPresent();
+      renderTable();
+      updateCharts();
+    }
+
+    // Add New Student
+    function addStudent(e) {
+      e.preventDefault();
+      const roll = document.getElementById('rollNo').value.trim();
+      const name = document.getElementById('studentName').value.trim();
+      const phone = document.getElementById('studentPhone').value.trim();
+      const joinedDate = document.getElementById('joinedDate').value;
+
+      if (students.some(s => s.roll.toLowerCase() === roll.toLowerCase())) {
+        showToast(`Roll Number "${roll}" already exists in Koyana Pattern Academy database!`, 'error');
+        return;
+      }
+
+      students.push({ roll, name, phone, joinedDate, removedDate: null });
+      saveData();
+
+      document.getElementById('studentForm').reset();
+      document.getElementById('joinedDate').value = todayStr;
+
+      ensureDefaultPresent();
+      renderTable();
+      updateCharts();
+      showToast(`Student ${name} (${roll}) admitted successfully!`, 'success');
+    }
+
+    // Soft Discharge Student Confirmation
+    function askRemoveStudent(roll) {
+      const activeDate = document.getElementById('attendanceDate').value;
+      const student = students.find(s => s.roll === roll);
+      if (!student) return;
+
+      pendingRemoveRoll = roll;
+      document.getElementById('removeStudentName').innerText = student.name;
+      document.getElementById('removeStudentRoll').innerText = student.roll;
+      document.getElementById('removeEffectiveDate').innerText = activeDate;
+
+      document.getElementById('confirmRemoveBtn').onclick = () => {
+        student.removedDate = activeDate;
+        saveData();
+        closeRemoveConfirmModal();
+        renderTable();
+        updateCharts();
+        showToast(`${student.name} discharged from ${activeDate} onwards. Historical data preserved.`, 'info');
+      };
+
+      document.getElementById('removeConfirmModal').classList.remove('hidden');
+    }
+
+    function closeRemoveConfirmModal() {
+      document.getElementById('removeConfirmModal').classList.add('hidden');
+      pendingRemoveRoll = null;
+    }
+
+    function setAttendance(roll, status) {
+      const activeDate = document.getElementById('attendanceDate').value;
+      attendanceData[activeDate][roll] = status;
+      saveData();
+      renderTable();
+      updateCharts();
+    }
+
+    function bulkMark(status) {
+      const activeDate = document.getElementById('attendanceDate').value;
+      let count = 0;
+      students.forEach(s => {
+        if (isStudentActiveOnDate(s, activeDate)) {
+          attendanceData[activeDate][s.roll] = status;
+          count++;
+        }
+      });
+      saveData();
+      renderTable();
+      updateCharts();
+      showToast(`Marked ${count} active students as ${status} for ${activeDate}`, 'success');
+    }
+
+    // Render Main Register Table
+    function renderTable() {
+      const tbody = document.getElementById('studentTableBody');
+      const activeDate = document.getElementById('attendanceDate').value;
+      const searchQuery = document.getElementById('tableSearch').value.toLowerCase();
+      tbody.innerHTML = '';
+
+      const activeStudents = students.filter(s => 
+        isStudentActiveOnDate(s, activeDate) && 
+        (s.name.toLowerCase().includes(searchQuery) || s.roll.toLowerCase().includes(searchQuery))
+      );
+
+      // Update Summary Widgets
+      document.getElementById('widgetTotalEnrolled').innerText = students.length;
+      document.getElementById('widgetActiveToday').innerText = students.filter(s => isStudentActiveOnDate(s, todayStr)).length;
+      document.getElementById('activeCountBadge').innerText = `Active Students on ${activeDate}: ${activeStudents.length}`;
+
+      if (activeStudents.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center p-8 text-slate-400">
+              <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>
+              No active students found for date ${activeDate}.
+            </td>
+          </tr>`;
+        return;
+      }
+
+      activeStudents.forEach(student => {
+        const status = (attendanceData[activeDate] && attendanceData[activeDate][student.roll]) || 'Present';
+        const isAbsent = status === 'Absent';
+
+        const tr = document.createElement('tr');
+        tr.className = `transition ${isAbsent ? 'bg-rose-50/60' : 'hover:bg-slate-50'}`;
+        tr.innerHTML = `
+          <td class="p-3 font-semibold text-slate-800 font-mono text-xs">${student.roll}</td>
+          <td class="p-3">
+            <span class="font-medium ${isAbsent ? 'text-rose-700 font-bold' : 'text-slate-800'}">${student.name}</span>
+            <div class="text-[10px] text-slate-400">Joined: ${student.joinedDate}</div>
+          </td>
+          <td class="p-3">
+            <div class="inline-flex rounded-lg shadow-sm">
+              <button onclick="setAttendance('${student.roll}', 'Present')" class="px-3 py-1 text-xs rounded-l-lg font-bold transition ${status === 'Present' ? 'bg-emerald-600 text-white shadow' : 'bg-slate-200 text-slate-600 hover:bg-emerald-100'}">
+                Present
+              </button>
+              <button onclick="setAttendance('${student.roll}', 'Absent')" class="px-3 py-1 text-xs rounded-r-lg font-bold transition ${status === 'Absent' ? 'bg-rose-600 text-white shadow' : 'bg-slate-200 text-slate-600 hover:bg-rose-100'}">
+                Absent
+              </button>
+            </div>
+          </td>
+          <td class="p-3 text-center">
+            <div class="flex items-center justify-center gap-1.5">
+              <button onclick="openStudentSearchModal('${student.roll}')" class="bg-indigo-50 text-koyana-800 hover:bg-indigo-100 text-xs px-2.5 py-1 rounded-lg font-semibold border border-indigo-200 transition" title="View Profile & Stats">
+                <i class="fa-solid fa-chart-line"></i>
+              </button>
+              <button onclick="askRemoveStudent('${student.roll}')" class="bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs px-2.5 py-1 rounded-lg font-semibold border border-rose-200 transition" title="Remove student from this date onwards">
+                <i class="fa-solid fa-user-minus"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    let whatsappQueue = [];
+    let whatsappQueueIndex = 0;
+
+    function openWhatsAppQueueModal() {
+      const activeDate = document.getElementById('attendanceDate').value;
+      whatsappQueue = students.filter(s => isStudentActiveOnDate(s, activeDate) && attendanceData[activeDate][s.roll] === 'Absent');
+
+      if (whatsappQueue.length === 0) {
+        showToast(`No absentees marked for ${activeDate}! Class attendance is 100%.`, 'success');
+        return;
+      }
+
+      whatsappQueueIndex = 0;
+      document.getElementById('waQueueDate').innerText = activeDate;
+      renderQueueStep();
+      document.getElementById('whatsappQueueModal').classList.remove('hidden');
+    }
+
+    function closeWhatsAppQueueModal() {
+      document.getElementById('whatsappQueueModal').classList.add('hidden');
+    }
+
+    function renderQueueStep() {
+      if (whatsappQueueIndex >= whatsappQueue.length) {
+        closeWhatsAppQueueModal();
+        showToast(`Finished WhatsApp notification queue!`, 'success');
+        return;
+      }
+
+      const current = whatsappQueue[whatsappQueueIndex];
+      document.getElementById('waQueueStudentName').innerText = current.name;
+      document.getElementById('waQueueStudentRoll').innerText = current.roll;
+      document.getElementById('waQueueProgressBadge').innerText = `Student ${whatsappQueueIndex + 1} of ${whatsappQueue.length}`;
+    }
+
+    function sendCurrentQueueWhatsApp() {
+      const activeDate = document.getElementById('attendanceDate').value;
+      const current = whatsappQueue[whatsappQueueIndex];
+      const stats = getStudentStats(current.roll, 'year');
+
+      if (!current.phone) {
+        showToast(`Phone number missing for ${current.name}. Skipping...`, 'error');
+        whatsappQueueIndex++;
+        renderQueueStep();
+        return;
+      }
+
+      const msg = `KOYANA PATTERN ACADEMY ALERT%0A%0AStudent: *${current.name}* (${current.roll})%0ADate: *${activeDate}*%0AStatus: *ABSENT*%0AOverall Attendance: *${stats.percent}%*%0A%0APlease contact Academy Office for queries.`;
+      window.open(`https://wa.me/${current.phone}?text=${msg}`, '_blank');
+
+      whatsappQueueIndex++;
+      renderQueueStep();
+    }
+
+    function skipQueueStudent() {
+      whatsappQueueIndex++;
+      renderQueueStep();
+    }
+
+    // Individual Student Deep-Dive Profile
+    function openStudentSearchModal(defaultRoll = null) {
+      const modal = document.getElementById('studentModal');
+      const select = document.getElementById('modalStudentSelect');
+      select.innerHTML = '';
+
+      students.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.roll;
+        opt.innerText = `${s.roll} - ${s.name} ${s.removedDate ? '(Discharged)' : ''}`;
+        select.appendChild(opt);
+      });
+
+      if (defaultRoll) select.value = defaultRoll;
+
+      modal.classList.remove('hidden');
+      renderIndividualStudentReport();
+    }
+
+    function closeStudentModal() {
+      document.getElementById('studentModal').classList.add('hidden');
+    }
+
+    function getStudentStats(roll, timeframe = 'year') {
+      const student = students.find(s => s.roll === roll);
+      if (!student) return { total: 0, present: 0, absent: 0, percent: 0, logs: [] };
+
+      const allDates = Object.keys(attendanceData).sort().reverse();
+      let filteredDates = allDates.filter(d => isStudentActiveOnDate(student, d));
+
+      if (timeframe === 'week') filteredDates = filteredDates.slice(0, 7);
+      else if (timeframe === 'month') filteredDates = filteredDates.slice(0, 30);
+
+      let present = 0, absent = 0;
+      const logs = [];
+
+      filteredDates.forEach(d => {
+        const status = attendanceData[d][roll] || 'Not Marked';
+        if (status === 'Present') present++;
+        if (status === 'Absent') absent++;
+        logs.push({ date: d, status });
+      });
+
+      const total = present + absent;
+      const percent = total > 0 ? Math.round((present / total) * 100) : 0;
+
+      return { total, present, absent, percent, logs, student };
+    }
+
+    function renderIndividualStudentReport() {
+      const roll = document.getElementById('modalStudentSelect').value;
+      const timeframe = document.getElementById('modalTimeframe').value;
+      
+      const stats = getStudentStats(roll, timeframe);
+      if (!stats.student) return;
+
+      document.getElementById('indivName').innerText = stats.student.name;
+      document.getElementById('indivRoll').innerText = stats.student.roll;
+      document.getElementById('indivJoined').innerText = stats.student.joinedDate;
+      document.getElementById('indivPercent').innerText = `${stats.percent}%`;
+      document.getElementById('indivTotal').innerText = stats.total;
+      document.getElementById('indivPresent').innerText = stats.present;
+      document.getElementById('indivAbsent').innerText = stats.absent;
+
+      document.getElementById('indivStatusTag').innerHTML = stats.student.removedDate ? 
+        `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">Discharged on ${stats.student.removedDate}</span>` : 
+        `<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Active Student</span>`;
+
+      const tbody = document.getElementById('indivLogsBody');
+      tbody.innerHTML = '';
+
+      if (stats.logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-slate-400">No session logs found for selected timeframe.</td></tr>`;
+        return;
+      }
+
+      stats.logs.forEach(log => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="p-2.5 border-b font-medium text-slate-700">${log.date}</td>
+          <td class="p-2.5 border-b font-bold ${log.status === 'Present' ? 'text-emerald-600' : 'text-rose-600'}">${log.status}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function shareIndividualWhatsAppFromModal() {
+      const roll = document.getElementById('modalStudentSelect').value;
+      const timeframe = document.getElementById('modalTimeframe').value;
+      const stats = getStudentStats(roll, timeframe);
+
+      if (!stats.student.phone) {
+        showToast("Phone number missing for this student!", "error");
+        return;
+      }
+
+      const msg = `KOYANA PATTERN ACADEMY REPORT%0A%0AStudent: ${stats.student.name} (${stats.student.roll})%0AHorizon: ${timeframe.toUpperCase()}%0AOverall Attendance: ${stats.percent}% (${stats.present}/${stats.total} sessions present)`;
+      window.open(`https://wa.me/${stats.student.phone}?text=${msg}`, '_blank');
+    }
+
+    function exportIndividualStudentPDF() {
+      const roll = document.getElementById('modalStudentSelect').value;
+      const element = document.getElementById('individualStudentPrintArea');
+      const opt = {
+        margin: 0.5,
+        filename: `KPA_Student_Report_${roll}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+
+    function setAnalyticsPeriod(period) {
+      activeAnalyticsPeriod = period;
+
+      ['Day', 'Week', 'Month', 'Year'].forEach(p => {
+        const btn = document.getElementById(`btnPeriod${p}`);
+        if (p.toLowerCase() === period) {
+          btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-koyana-900 transition";
+        } else {
+          btn.className = "px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
+        }
+      });
+
+      updateCharts();
+    }
+
+    let pieChart, lineChart;
+
+    function initCharts() {
+      const ctxPie = document.getElementById('pieChart').getContext('2d');
+      pieChart = new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+          labels: ['Present Sessions', 'Absent Sessions'],
+          datasets: [{ data: [0, 0], backgroundColor: ['#059669', '#e11d48'], borderWidth: 0 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      });
+
+      const ctxLine = document.getElementById('lineChart').getContext('2d');
+      lineChart = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Class Attendance %',
+            data: [],
+            borderColor: '#1e40af',
+            backgroundColor: 'rgba(30, 64, 175, 0.1)',
+            tension: 0.3,
+            fill: true
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
+      });
+
+      updateCharts();
+    }
+
+    function updateCharts() {
+      const activeDate = document.getElementById('attendanceDate').value;
+      const dates = Object.keys(attendanceData).sort();
+
+      let targetDates = [activeDate];
+
+      if (activeAnalyticsPeriod === 'week') targetDates = dates.slice(-7);
+      else if (activeAnalyticsPeriod === 'month') targetDates = dates.slice(-30);
+      else if (activeAnalyticsPeriod === 'year') targetDates = dates;
+
+      let totalPresent = 0, totalAbsent = 0;
+      targetDates.forEach(d => {
+        const dayData = attendanceData[d] || {};
+        students.forEach(s => {
+          if (isStudentActiveOnDate(s, d)) {
+            if (dayData[s.roll] === 'Absent') totalAbsent++;
+            else totalPresent++;
+          }
+        });
+      });
+
+      document.getElementById('pieChartTitle').innerText = `Class Ratio (${activeAnalyticsPeriod.toUpperCase()})`;
+      pieChart.data.datasets[0].data = [totalPresent, totalAbsent];
+      pieChart.update();
+
+      const lineLabels = targetDates;
+      const lineData = targetDates.map(d => {
+        const dayData = attendanceData[d] || {};
+        let pres = 0, tot = 0;
+        students.forEach(s => {
+          if (isStudentActiveOnDate(s, d)) {
+            tot++;
+            if (dayData[s.roll] !== 'Absent') pres++;
+          }
+        });
+        return tot > 0 ? Math.round((pres / tot) * 100) : 0;
+      });
+
+      document.getElementById('lineChartTitle').innerText = `Rate Trend (${activeAnalyticsPeriod.toUpperCase()})`;
+      lineChart.data.labels = lineLabels;
+      lineChart.data.datasets[0].data = lineData;
+      lineChart.update();
+    }
+
+    // Perfect, Formatted PDF Generation using Dedicated Printable Template
+    function exportClassReportPDF() {
+      const activeDate = document.getElementById('attendanceDate').value;
+      const activeStudents = students.filter(s => isStudentActiveOnDate(s, activeDate));
+
+      if (activeStudents.length === 0) {
+        showToast("No active student records available to export for this date.", "error");
+        return;
+      }
+
+      // Populate Official PDF Template
+      document.getElementById('pdfReportScope').innerText = `Date: ${activeDate} (${activeAnalyticsPeriod.toUpperCase()} view)`;
+      document.getElementById('pdfGeneratedDate').innerText = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+      
+      let presentCount = 0;
+      let absentCount = 0;
+
+      const pdfTbody = document.getElementById('pdfTableBody');
+      pdfTbody.innerHTML = '';
+
+      activeStudents.forEach(student => {
+        const status = (attendanceData[activeDate] && attendanceData[activeDate][student.roll]) || 'Present';
+        if (status === 'Present') presentCount++;
+        else absentCount++;
+
+        const tr = document.createElement('tr');
+        tr.className = status === 'Absent' ? 'bg-rose-50/50' : '';
+        tr.innerHTML = `
+          <td class="p-2.5 border-r border-slate-300 font-mono font-bold">${student.roll}</td>
+          <td class="p-2.5 border-r border-slate-300 font-semibold">${student.name}</td>
+          <td class="p-2.5 border-r border-slate-300 text-slate-500">${student.joinedDate}</td>
+          <td class="p-2.5 text-center font-bold ${status === 'Present' ? 'text-emerald-700' : 'text-rose-700'}">${status}</td>
+        `;
+        pdfTbody.appendChild(tr);
+      });
+
+      const total = activeStudents.length;
+      const classRate = total > 0 ? Math.round((presentCount / total) * 100) : 0;
+
+      document.getElementById('pdfTotalEnrolled').innerText = total;
+      document.getElementById('pdfTotalPresent').innerText = presentCount;
+      document.getElementById('pdfTotalAbsent').innerText = absentCount;
+      document.getElementById('pdfClassRate').innerText = `${classRate}%`;
+
+      document.querySelectorAll('.pdfCurrentDate').forEach(el => el.innerText = todayStr);
+
+      // Render PDF with html2pdf.js using precision document formatting
+      const element = document.getElementById('officialPdfPrintArea');
+      
+      showToast("Generating official Koyana Pattern Academy PDF Report...", "info");
+
+      const opt = {
+        margin: [0.3, 0.3, 0.3, 0.3],
+        filename: `Koyana_Pattern_Academy_Attendance_${activeDate}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        showToast("PDF Report downloaded successfully!", "success");
+      });
+    }
+  </script>
+</body>
+</html>
