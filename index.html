@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Koyana Pattern Academy - Attendance Portal</title>
+  <title>Koyana Academy - Attendance Portal</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,38 +18,37 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Google Fonts: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            koyana: {
-              50: '#f0f5ff',
-              100: '#e0ebfe',
-              600: '#2563eb',
-              800: '#1e40af',
-              900: '#1e3a8a',
-              gold: '#d97706',
-              goldHover: '#b45309'
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
+    body {
+      background-color: #0b0f19;
+      color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
+    }
+
     /* Custom scrollbar styling */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-    
+    ::-webkit-scrollbar-track { background: #111827; }
+    ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #374151; }
+
+    .bg-gradient-pill {
+      background: linear-gradient(135deg, #06b6d4 0%, #818cf8 50%, #fcd34d 100%);
+    }
+
+    .bg-glass {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     /* Print Specific Styling to ensure pixel-perfect PDF export */
     .pdf-template {
       width: 790px !important;
@@ -60,7 +59,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen pb-12">
+<body class="min-h-screen pb-12 text-slate-200 antialiased">
 
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
@@ -68,89 +67,106 @@
   <!-- Main Container -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
     
-    <!-- Koyana Pattern Academy Header -->
-    <header class="bg-gradient-to-r from-koyana-900 via-koyana-800 to-indigo-950 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden border-b-4 border-amber-500">
-      <!-- Decorative background watermark -->
-      <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl font-black select-none text-white">
-        KPA
+    <!-- Navbar Header matching Demo Site -->
+    <header class="bg-glass rounded-2xl p-4 px-6 flex flex-wrap justify-between items-center gap-4 sticky top-4 z-40 shadow-2xl">
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-indigo-300 font-extrabold text-lg shadow-inner">
+          🎓
+        </div>
+        <div>
+          <a href="https://preview--pixel-perfect-render-8607.lovable.app/" class="text-xl font-black tracking-tight text-white hover:text-cyan-400 transition">
+            Koyana Academy
+          </a>
+          <p class="text-[10px] text-slate-400 tracking-wider uppercase font-medium">Class 11 & 12 • JEE / NEET / MHT-CET</p>
+        </div>
       </div>
 
-      <div class="relative z-10 flex flex-wrap justify-between items-center gap-4">
-        <div class="flex items-center gap-4">
-          <!-- Logo Badge -->
-          <div class="w-14 h-14 bg-amber-500 text-koyana-900 rounded-2xl flex items-center justify-center font-black text-2xl shadow-lg border-2 border-amber-300 transform -rotate-2">
-            KPA
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">KOYANA PATTERN ACADEMY</h1>
-              <span class="bg-amber-500/20 text-amber-300 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-amber-500/30">Official</span>
-            </div>
-            <p class="text-indigo-200 text-xs sm:text-sm font-medium mt-0.5">Excellence in Academic & Competitive Education • Student Attendance Portal</p>
-          </div>
-        </div>
+      <!-- Navigation Pill Bar with Anchor Link to Main Website -->
+      <!-- <nav class="flex items-center bg-slate-900/90 p-1.5 rounded-full border border-slate-800 text-xs font-semibold">
+        <a href="https://preview--pixel-perfect-render-8607.lovable.app/" class="px-4 py-2 rounded-full text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left text-[10px]"></i>
+          <span>Main Website</span>
+        </a>
+        <span class="px-4 py-2 rounded-full bg-gradient-pill text-slate-950 font-extrabold shadow-md">
+          Attendance Portal
+        </span>
+        <button onclick="openStudentSearchModal()" class="px-4 py-2 rounded-full text-slate-400 hover:text-white transition">
+          Student Portal
+        </button>
+      </nav> -->
 
-        <div class="flex items-center gap-3">
-          <button onclick="openStudentSearchModal()" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded-xl text-xs font-semibold backdrop-blur-md transition flex items-center gap-2 shadow">
-            <i class="fa-solid fa-magnifying-glass text-amber-400"></i>
-            <span>Search Student Profile</span>
-          </button>
-          <button onclick="exportClassReportPDF()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition shadow-lg flex items-center gap-2">
-            <i class="fa-solid fa-file-pdf"></i>
-            <span>Export Official PDF Report</span>
-          </button>
-        </div>
+      <!-- Badge & Action Buttons -->
+      <div class="flex items-center gap-2">
+        <button onclick="openStudentSearchModal()" class="bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700/60 px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-magnifying-glass text-cyan-400"></i>
+          <span>Search Student</span>
+        </button>
+        <button onclick="exportClassReportPDF()" class="bg-gradient-pill text-slate-950 font-extrabold px-3.5 py-2 rounded-xl text-xs shadow-lg hover:opacity-90 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span>Export PDF</span>
+        </button>
       </div>
     </header>
+
+    <!-- Sub Header Banner -->
+    <div class="text-center py-2">
+      <h1 class="text-2xl md:text-4xl font-black tracking-tight">
+        Transforming Ambition into <span class="text-gradient">Top AIR Ranks</span>
+      </h1>
+      <p class="text-slate-400 text-xs md:text-sm mt-1 max-w-2xl mx-auto">
+        Koyana Academy mentor-led batches, weekly mock analysis, and transparent attendance portals that never leave families guessing.
+      </p>
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
       <!-- Panel 1: Student Admission Form -->
-      <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col justify-between">
+      <section class="bg-glass p-6 rounded-2xl shadow-xl border border-slate-800/80 flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between border-b pb-3 mb-4">
-            <h2 class="text-sm font-bold text-koyana-900 uppercase tracking-wider flex items-center gap-2">
-              <i class="fa-solid fa-user-plus text-amber-500"></i>
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-widest flex items-center gap-2">
+              <i class="fa-solid fa-user-plus text-amber-400"></i>
               New Student Admission
             </h2>
-            <span class="text-[11px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-mono">Roll-scoped</span>
+            <span class="text-[10px] bg-slate-900 text-slate-400 border border-slate-800 px-2 py-0.5 rounded font-mono">Roll-scoped</span>
           </div>
 
           <form id="studentForm" onsubmit="addStudent(event)" class="space-y-3.5">
             <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-1">Roll Number</label>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Roll Number</label>
               <div class="relative">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-id-badge text-xs"></i></span>
-                <input type="text" id="rollNo" required placeholder="e.g. KPA-101" class="w-full border border-slate-300 rounded-xl pl-9 p-2.5 text-sm focus:ring-2 focus:ring-koyana-600 focus:border-koyana-600 outline-none transition">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-solid fa-id-badge text-xs"></i></span>
+                <input type="text" id="rollNo" required placeholder="e.g. JEE-101" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 p-2.5 text-sm text-white focus:border-cyan-500 outline-none transition">
               </div>
             </div>
 
             <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-1">Student Full Name</label>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Student Full Name</label>
               <div class="relative">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user text-xs"></i></span>
-                <input type="text" id="studentName" required placeholder="e.g. Rahul Patil" class="w-full border border-slate-300 rounded-xl pl-9 p-2.5 text-sm focus:ring-2 focus:ring-koyana-600 focus:border-koyana-600 outline-none transition">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-solid fa-user text-xs"></i></span>
+                <input type="text" id="studentName" required placeholder="e.g. Rahul Patil" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 p-2.5 text-sm text-white focus:border-cyan-500 outline-none transition">
               </div>
             </div>
 
             <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-1">Parent's WhatsApp Mobile Number</label>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Parent's WhatsApp Mobile Number</label>
               <div class="relative">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-brands fa-whatsapp text-xs"></i></span>
-                <input type="text" id="studentPhone" placeholder="e.g. 919876543210" class="w-full border border-slate-300 rounded-xl pl-9 p-2.5 text-sm focus:ring-2 focus:ring-koyana-600 focus:border-koyana-600 outline-none transition">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-brands fa-whatsapp text-xs"></i></span>
+                <input type="text" id="studentPhone" placeholder="e.g. 919876543210" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 p-2.5 text-sm text-white focus:border-cyan-500 outline-none transition">
               </div>
             </div>
 
             <div>
-              <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-1">Admission Date (Effective From)</label>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Admission Date (Effective From)</label>
               <div class="relative">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-calendar-day text-xs"></i></span>
-                <input type="date" id="joinedDate" required class="w-full border border-slate-300 rounded-xl pl-9 p-2.5 text-sm outline-none bg-slate-50 focus:ring-2 focus:ring-koyana-600">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-solid fa-calendar-day text-xs"></i></span>
+                <input type="date" id="joinedDate" required class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 p-2.5 text-sm text-white outline-none focus:border-cyan-500">
               </div>
-              <p class="text-[11px] text-slate-400 mt-1">Student will not appear in registers prior to this date.</p>
+              <p class="text-[10px] text-slate-500 mt-1">Student will not appear in registers prior to this date.</p>
             </div>
 
-            <button type="submit" class="w-full bg-koyana-800 hover:bg-koyana-900 text-white font-bold py-3 rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm mt-2">
+            <button type="submit" class="w-full bg-gradient-pill text-slate-950 font-extrabold py-3 rounded-xl transition shadow-lg hover:opacity-90 flex items-center justify-center gap-2 text-sm mt-2">
               <i class="fa-solid fa-plus-circle"></i>
               <span>Register New Student</span>
             </button>
@@ -158,40 +174,40 @@
         </div>
 
         <!-- Academy Quick Summary Widget -->
-        <div class="mt-6 pt-4 border-t border-slate-100 bg-slate-50 p-3.5 rounded-xl text-xs space-y-2">
-          <div class="flex justify-between text-slate-600">
+        <div class="mt-6 pt-4 border-t border-slate-800/80 bg-slate-900/50 p-3.5 rounded-xl text-xs space-y-2 border border-slate-800">
+          <div class="flex justify-between text-slate-400">
             <span>Total Enrolled Database:</span>
-            <span id="widgetTotalEnrolled" class="font-bold text-slate-800">0</span>
+            <span id="widgetTotalEnrolled" class="font-bold text-white">0</span>
           </div>
-          <div class="flex justify-between text-slate-600">
+          <div class="flex justify-between text-slate-400">
             <span>Active Today:</span>
-            <span id="widgetActiveToday" class="font-bold text-emerald-600">0</span>
+            <span id="widgetActiveToday" class="font-bold text-emerald-400">0</span>
           </div>
         </div>
       </section>
 
       <!-- Panel 2: Register & Bulk Actions -->
-      <section class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col justify-between">
+      <section class="lg:col-span-2 bg-glass p-6 rounded-2xl shadow-xl border border-slate-800/80 flex flex-col justify-between">
         <div>
           <!-- Register Controls Header -->
-          <div class="flex flex-wrap justify-between items-center gap-3 mb-4 pb-4 border-b border-slate-100">
+          <div class="flex flex-wrap justify-between items-center gap-3 mb-4 pb-4 border-b border-slate-800">
             <div>
-              <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">Active Register Date</label>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Active Register Date</label>
               <div class="flex items-center gap-2">
-                <input type="date" id="attendanceDate" onchange="onDateChange()" class="border border-slate-300 rounded-xl p-2 text-sm font-semibold outline-none bg-slate-50 focus:ring-2 focus:ring-koyana-600">
-                <button onclick="setTodayDate()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-2 rounded-xl font-medium border transition">Today</button>
+                <input type="date" id="attendanceDate" onchange="onDateChange()" class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-sm font-semibold text-white outline-none focus:border-cyan-500">
+                <button onclick="setTodayDate()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl font-medium border border-slate-700 transition">Today</button>
               </div>
             </div>
 
             <!-- Quick Bulk Actions -->
             <div class="flex items-center gap-2 flex-wrap">
-              <button onclick="bulkMark('Present')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold px-3 py-2 rounded-xl border border-emerald-200 transition flex items-center gap-1.5">
-                <i class="fa-solid fa-circle-check text-emerald-600"></i> All Present
+              <button onclick="bulkMark('Present')" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i> All Present
               </button>
-              <button onclick="bulkMark('Absent')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold px-3 py-2 rounded-xl border border-rose-200 transition flex items-center gap-1.5">
-                <i class="fa-solid fa-circle-xmark text-rose-600"></i> All Absent
+              <button onclick="bulkMark('Absent')" class="bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-xmark text-rose-400"></i> All Absent
               </button>
-              <button onclick="openWhatsAppQueueModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+              <button onclick="openWhatsAppQueueModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-lg transition flex items-center gap-1.5">
                 <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp Absentees
               </button>
             </div>
@@ -200,26 +216,26 @@
           <!-- Search & Count Bar -->
           <div class="mb-3 flex flex-wrap justify-between items-center gap-2">
             <div class="relative w-full sm:w-72">
-              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-search text-xs"></i></span>
-              <input type="text" id="tableSearch" onkeyup="renderTable()" placeholder="Filter by roll or student name..." class="w-full border border-slate-200 rounded-xl pl-9 p-2 text-xs outline-none focus:border-koyana-600">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-solid fa-search text-xs"></i></span>
+              <input type="text" id="tableSearch" onkeyup="renderTable()" placeholder="Filter by roll or student name..." class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 p-2 text-xs text-white outline-none focus:border-cyan-500">
             </div>
-            <span id="activeCountBadge" class="text-xs text-slate-500 font-semibold bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
+            <span id="activeCountBadge" class="text-xs text-cyan-400 font-semibold bg-slate-900/80 px-3 py-1 rounded-lg border border-slate-800">
               Active Students: 0
             </span>
           </div>
 
           <!-- Student Register Table -->
-          <div class="overflow-x-auto rounded-xl border border-slate-200">
+          <div class="overflow-x-auto rounded-xl border border-slate-800">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="bg-slate-100 text-slate-600 text-xs uppercase font-bold tracking-wider border-b border-slate-200">
+                <tr class="bg-slate-900/80 text-slate-400 text-xs uppercase font-bold tracking-wider border-b border-slate-800">
                   <th class="p-3">Roll No</th>
                   <th class="p-3">Student Name</th>
                   <th class="p-3">Status</th>
                   <th class="p-3 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody id="studentTableBody" class="divide-y divide-slate-100 text-sm">
+              <tbody id="studentTableBody" class="divide-y divide-slate-800/60 text-sm">
                 <!-- Dynamic Rows -->
               </tbody>
             </table>
@@ -227,45 +243,45 @@
         </div>
 
         <!-- Table Footer Info -->
-        <div class="mt-4 pt-3 text-[11px] text-slate-400 flex justify-between items-center">
-          <span><i class="fa-solid fa-circle-info text-amber-500 mr-1"></i> Removing a student removes them from this date forward without altering historical registers or roll numbers.</span>
+        <div class="mt-4 pt-3 text-[10px] text-slate-500 flex justify-between items-center border-t border-slate-800/60">
+          <span><i class="fa-solid fa-circle-info text-amber-400 mr-1"></i> Removing a student removes them from this date forward without altering historical registers or roll numbers.</span>
         </div>
       </section>
 
     </div>
 
     <!-- Panel 3: Multi-Duration Visual Analytics & Reports -->
-    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 space-y-6">
+    <section class="bg-glass p-6 rounded-2xl shadow-xl border border-slate-800/80 space-y-6">
       
-      <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-100 pb-4">
+      <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
         <div>
-          <h2 class="text-lg font-bold text-koyana-900 flex items-center gap-2">
-            <i class="fa-solid fa-chart-pie text-amber-500"></i>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-cyan-400"></i>
             Attendance Graphical Insights
           </h2>
-          <p class="text-xs text-slate-500">Switch analytics time horizons and analyze class participation trends.</p>
+          <p class="text-xs text-slate-400">Switch analytics time horizons and analyze class participation trends.</p>
         </div>
 
         <!-- Duration Switcher Buttons -->
-        <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
-          <button onclick="setAnalyticsPeriod('day')" id="btnPeriodDay" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-koyana-900 transition">Single Day</button>
-          <button onclick="setAnalyticsPeriod('week')" id="btnPeriodWeek" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Week</button>
-          <button onclick="setAnalyticsPeriod('month')" id="btnPeriodMonth" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Month</button>
-          <button onclick="setAnalyticsPeriod('year')" id="btnPeriodYear" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Year</button>
+        <div class="flex items-center gap-1.5 bg-slate-900/90 p-1 rounded-full border border-slate-800">
+          <button onclick="setAnalyticsPeriod('day')" id="btnPeriodDay" class="px-3 py-1.5 text-xs font-extrabold rounded-full bg-gradient-pill text-slate-950 transition">Single Day</button>
+          <button onclick="setAnalyticsPeriod('week')" id="btnPeriodWeek" class="px-3 py-1.5 text-xs font-semibold rounded-full text-slate-400 hover:text-white transition">Week</button>
+          <button onclick="setAnalyticsPeriod('month')" id="btnPeriodMonth" class="px-3 py-1.5 text-xs font-semibold rounded-full text-slate-400 hover:text-white transition">Month</button>
+          <button onclick="setAnalyticsPeriod('year')" id="btnPeriodYear" class="px-3 py-1.5 text-xs font-semibold rounded-full text-slate-400 hover:text-white transition">Year</button>
         </div>
       </div>
 
       <!-- Graphical Visualizations -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 flex flex-col items-center">
-          <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3" id="pieChartTitle">Class Participation Ratio</h3>
+        <div class="bg-slate-900/50 p-4 rounded-2xl border border-slate-800 flex flex-col items-center">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3" id="pieChartTitle">Class Participation Ratio</h3>
           <div class="h-56 w-full flex justify-center items-center">
             <canvas id="pieChart"></canvas>
           </div>
         </div>
 
-        <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/60 flex flex-col items-center">
-          <h3 class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3" id="lineChartTitle">Attendance Rate Trend</h3>
+        <div class="bg-slate-900/50 p-4 rounded-2xl border border-slate-800 flex flex-col items-center">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3" id="lineChartTitle">Attendance Rate Trend</h3>
           <div class="h-56 w-full">
             <canvas id="lineChart"></canvas>
           </div>
@@ -276,27 +292,27 @@
   </div>
 
   <!-- MODAL 1: Student Search / Individual Profile & Analytics Modal -->
-  <div id="studentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border border-slate-100">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-lg font-bold text-koyana-900 flex items-center gap-2">
-          <i class="fa-solid fa-address-card text-amber-500"></i>
+  <div id="studentModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-address-card text-cyan-400"></i>
           Student Deep-Dive Profile
         </h3>
-        <button onclick="closeStudentModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition">&times;</button>
+        <button onclick="closeStudentModal()" class="text-slate-400 hover:text-white text-lg font-bold w-8 h-8 rounded-full hover:bg-slate-800 flex items-center justify-center transition">&times;</button>
       </div>
 
       <!-- Selector in Modal -->
-      <div class="flex flex-wrap gap-3 items-center bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+      <div class="flex flex-wrap gap-3 items-center bg-slate-950 p-3.5 rounded-xl border border-slate-800">
         <div class="flex-1 min-w-[200px]">
-          <label class="text-xs font-bold text-slate-500 uppercase block mb-1">Select Student</label>
-          <select id="modalStudentSelect" onchange="renderIndividualStudentReport()" class="w-full border border-slate-300 rounded-xl p-2 text-sm bg-white outline-none focus:ring-2 focus:ring-koyana-600">
+          <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Select Student</label>
+          <select id="modalStudentSelect" onchange="renderIndividualStudentReport()" class="w-full bg-slate-900 border border-slate-800 text-white rounded-xl p-2 text-sm outline-none focus:border-cyan-500">
             <!-- Dynamic student options -->
           </select>
         </div>
         <div>
-          <label class="text-xs font-bold text-slate-500 uppercase block mb-1">Time Horizon</label>
-          <select id="modalTimeframe" onchange="renderIndividualStudentReport()" class="border border-slate-300 rounded-xl p-2 text-sm bg-white outline-none focus:ring-2 focus:ring-koyana-600">
+          <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Time Horizon</label>
+          <select id="modalTimeframe" onchange="renderIndividualStudentReport()" class="bg-slate-900 border border-slate-800 text-white rounded-xl p-2 text-sm outline-none focus:border-cyan-500">
             <option value="week">Past 7 Days</option>
             <option value="month">Past 30 Days</option>
             <option value="year" selected>All Time</option>
@@ -305,47 +321,47 @@
       </div>
 
       <!-- Student Printable Data Region -->
-      <div id="individualStudentPrintArea" class="p-5 bg-slate-50/80 rounded-2xl border border-slate-200 space-y-4">
-        <div class="flex justify-between items-start border-b border-slate-200 pb-3">
+      <div id="individualStudentPrintArea" class="p-5 bg-slate-950/80 rounded-2xl border border-slate-800 space-y-4">
+        <div class="flex justify-between items-start border-b border-slate-800 pb-3">
           <div>
-            <h4 class="text-xl font-black text-slate-900" id="indivName">--</h4>
-            <p class="text-xs text-slate-500 mt-0.5">Roll No: <span id="indivRoll" class="font-bold text-slate-700">--</span> | Joined: <span id="indivJoined">--</span></p>
+            <h4 class="text-xl font-black text-white" id="indivName">--</h4>
+            <p class="text-xs text-slate-400 mt-0.5">Roll No: <span id="indivRoll" class="font-bold text-cyan-400">--</span> | Joined: <span id="indivJoined">--</span></p>
             <p class="text-xs mt-1 font-semibold" id="indivStatusTag"></p>
           </div>
           <div class="text-right">
-            <span id="indivPercent" class="text-3xl font-black text-koyana-800">0%</span>
-            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Attendance Rate</p>
+            <span id="indivPercent" class="text-3xl font-black text-gradient">0%</span>
+            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Attendance Rate</p>
           </div>
         </div>
 
         <!-- Individual Mini Stats Grid -->
         <div class="grid grid-cols-3 gap-3 text-center">
-          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-            <span class="text-[10px] text-slate-500 uppercase font-bold block">Total Sessions</span>
-            <span id="indivTotal" class="text-lg font-extrabold text-slate-800">0</span>
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Sessions</span>
+            <span id="indivTotal" class="text-lg font-extrabold text-white">0</span>
           </div>
-          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-            <span class="text-[10px] text-slate-500 uppercase font-bold block text-emerald-600">Present</span>
-            <span id="indivPresent" class="text-lg font-extrabold text-emerald-600">0</span>
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-emerald-400 uppercase font-bold block">Present</span>
+            <span id="indivPresent" class="text-lg font-extrabold text-emerald-400">0</span>
           </div>
-          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-            <span class="text-[10px] text-slate-500 uppercase font-bold block text-rose-600">Absent</span>
-            <span id="indivAbsent" class="text-lg font-extrabold text-rose-600">0</span>
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-rose-400 uppercase font-bold block">Absent</span>
+            <span id="indivAbsent" class="text-lg font-extrabold text-rose-400">0</span>
           </div>
         </div>
 
         <!-- Attendance Logs Table -->
         <div>
-          <h5 class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Session History Log</h5>
-          <div class="max-h-48 overflow-y-auto border border-slate-200 rounded-xl bg-white">
+          <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Session History Log</h5>
+          <div class="max-h-48 overflow-y-auto border border-slate-800 rounded-xl bg-slate-900">
             <table class="w-full text-xs text-left border-collapse">
-              <thead class="bg-slate-100 text-slate-600 uppercase font-bold sticky top-0">
+              <thead class="bg-slate-950 text-slate-400 uppercase font-bold sticky top-0">
                 <tr>
-                  <th class="p-2.5 border-b">Date</th>
-                  <th class="p-2.5 border-b">Attendance Status</th>
+                  <th class="p-2.5 border-b border-slate-800">Date</th>
+                  <th class="p-2.5 border-b border-slate-800">Attendance Status</th>
                 </tr>
               </thead>
-              <tbody id="indivLogsBody" class="divide-y divide-slate-100">
+              <tbody id="indivLogsBody" class="divide-y divide-slate-800">
                 <!-- Logs dynamic -->
               </tbody>
             </table>
@@ -355,10 +371,10 @@
 
       <!-- Modal Footer Buttons -->
       <div class="flex flex-wrap justify-between items-center gap-2 pt-2">
-        <button onclick="shareIndividualWhatsAppFromModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition flex items-center gap-1.5">
+        <button onclick="shareIndividualWhatsAppFromModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition flex items-center gap-1.5">
           <i class="fa-brands fa-whatsapp text-sm"></i> Send Student WhatsApp Report
         </button>
-        <button onclick="exportIndividualStudentPDF()" class="bg-koyana-800 hover:bg-koyana-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition flex items-center gap-1.5">
+        <button onclick="exportIndividualStudentPDF()" class="bg-gradient-pill text-slate-950 font-extrabold text-xs px-4 py-2.5 rounded-xl shadow transition flex items-center gap-1.5">
           <i class="fa-solid fa-file-pdf"></i> Download Student PDF
         </button>
       </div>
@@ -366,25 +382,25 @@
   </div>
 
   <!-- MODAL 2: WhatsApp Absentees Interactive Queue Modal -->
-  <div id="whatsappQueueModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-md font-bold text-koyana-900 flex items-center gap-2">
-          <i class="fa-brands fa-whatsapp text-emerald-600 text-lg"></i>
+  <div id="whatsappQueueModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-md font-bold text-white flex items-center gap-2">
+          <i class="fa-brands fa-whatsapp text-emerald-400 text-lg"></i>
           WhatsApp Absentees Queue
         </h3>
-        <button onclick="closeWhatsAppQueueModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+        <button onclick="closeWhatsAppQueueModal()" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
       </div>
 
       <div class="text-center space-y-3 py-2">
-        <p class="text-xs text-slate-600">Send direct WhatsApp attendance alerts to absent students for <strong id="waQueueDate" class="text-slate-800">--</strong>.</p>
+        <p class="text-xs text-slate-400">Send direct WhatsApp attendance alerts to absent students for <strong id="waQueueDate" class="text-cyan-400">--</strong>.</p>
         
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <span class="text-xs font-bold uppercase text-slate-400 block mb-1">Current Student in Queue</span>
-          <h4 id="waQueueStudentName" class="text-lg font-black text-slate-900">--</h4>
-          <p id="waQueueStudentRoll" class="text-xs text-slate-500 font-mono">--</p>
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+          <span class="text-[10px] font-bold uppercase text-slate-500 block mb-1">Current Student in Queue</span>
+          <h4 id="waQueueStudentName" class="text-lg font-black text-white">--</h4>
+          <p id="waQueueStudentRoll" class="text-xs text-cyan-400 font-mono">--</p>
           <div class="mt-3 flex justify-center gap-2 text-xs">
-            <span id="waQueueProgressBadge" class="bg-emerald-100 text-emerald-800 font-bold px-3 py-1 rounded-full">
+            <span id="waQueueProgressBadge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-3 py-1 rounded-full">
               Student 1 of 1
             </span>
           </div>
@@ -392,10 +408,10 @@
       </div>
 
       <div class="flex gap-2">
-        <button onclick="skipQueueStudent()" class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition">
+        <button onclick="skipQueueStudent()" class="w-1/3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
           Skip
         </button>
-        <button onclick="sendCurrentQueueWhatsApp()" class="w-2/3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow flex items-center justify-center gap-1.5">
+        <button onclick="sendCurrentQueueWhatsApp()" class="w-2/3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1.5">
           <i class="fa-brands fa-whatsapp"></i> Send WhatsApp Alert
         </button>
       </div>
@@ -403,48 +419,48 @@
   </div>
 
   <!-- MODAL 3: Custom Soft Delete Removal Confirmation Modal -->
-  <div id="removeConfirmModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-slate-100">
-      <div class="flex items-center gap-3 text-rose-600 border-b pb-3">
+  <div id="removeConfirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center gap-3 text-rose-400 border-b border-slate-800 pb-3">
         <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
-        <h3 class="text-md font-bold text-slate-900">Confirm Student Removal</h3>
+        <h3 class="text-md font-bold text-white">Confirm Student Removal</h3>
       </div>
 
-      <p class="text-xs text-slate-600 leading-relaxed">
-        Are you sure you want to discharge <strong id="removeStudentName" class="text-slate-900">--</strong> (<span id="removeStudentRoll" class="font-mono">--</span>) from <strong id="removeEffectiveDate" class="text-rose-600">--</strong> onwards?
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Are you sure you want to discharge <strong id="removeStudentName" class="text-white">--</strong> (<span id="removeStudentRoll" class="font-mono text-cyan-400">--</span>) from <strong id="removeEffectiveDate" class="text-rose-400">--</strong> onwards?
       </p>
 
-      <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-[11px] text-amber-800 space-y-1">
+      <div class="bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl text-[11px] text-amber-300 space-y-1">
         <p class="font-bold"><i class="fa-solid fa-shield"></i> Data Integrity Protection:</p>
         <p>1. Attendance records prior to this date will remain permanently intact.</p>
         <p>2. Roll numbers will not be modified or re-shuffled.</p>
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closeRemoveConfirmModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+        <button onclick="closeRemoveConfirmModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 transition">
           Cancel
         </button>
-        <button id="confirmRemoveBtn" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 transition shadow">
+        <button id="confirmRemoveBtn" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 transition shadow">
           Confirm Discharge
         </button>
       </div>
     </div>
   </div>
 
-  <!-- DEDICATED OFFICIAL PDF PRINT TEMPLATE (Hidden off-screen, populated dynamically) -->
+  <!-- DEDICATED OFFICIAL PDF PRINT TEMPLATE (Hidden off-screen) -->
   <div class="fixed left-[-9999px] top-[-9999px]">
     <div id="officialPdfPrintArea" class="pdf-template p-8 space-y-6">
       
       <!-- Official Header -->
       <div class="flex justify-between items-center border-b-2 border-amber-500 pb-4">
         <div>
-          <h1 class="text-2xl font-black text-blue-950 tracking-tight">KOYANA PATTERN ACADEMY</h1>
+          <h1 class="text-2xl font-black text-blue-950 tracking-tight">KOYANA ACADEMY</h1>
           <p class="text-xs text-slate-600 font-semibold mt-0.5">Karad-Chiplun Road, Patan, Maharashtra • Contact: +91 98765 43210</p>
           <p class="text-[11px] text-slate-500">Official Student Attendance Record & Academic Verification Report</p>
         </div>
         <div class="text-right">
           <div class="bg-blue-950 text-amber-400 font-black px-3 py-1.5 rounded-lg text-lg inline-block">
-            KPA
+            KA
           </div>
           <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">Certified Document</p>
         </div>
@@ -510,13 +526,13 @@
         <div class="text-right space-y-1">
           <p class="font-bold text-slate-800">Principal / Director Seal</p>
           <p class="text-[10px] text-slate-400">Signature: ______________________</p>
-          <p class="text-[10px] text-slate-400">Koyana Pattern Academy, Patan</p>
+          <p class="text-[10px] text-slate-400">Koyana Academy, Patan</p>
         </div>
       </div>
 
       <!-- Computer Generated Footer Notice -->
       <div class="text-center text-[9px] text-slate-400 border-t border-slate-100 pt-2">
-        This is an official computer-generated document from Koyana Pattern Academy Management System.
+        This is an official computer-generated document from Koyana Academy Management System.
       </div>
 
     </div>
@@ -526,10 +542,10 @@
   <script>
     // System Initial State
     let students = JSON.parse(localStorage.getItem('kpa_students')) || [
-      { roll: 'KPA-101', name: 'Aarav Patil', phone: '919876543210', joinedDate: '2026-09-01', removedDate: null },
-      { roll: 'KPA-102', name: 'Priya Sharma', phone: '919876543211', joinedDate: '2026-09-01', removedDate: null },
-      { roll: 'KPA-103', name: 'Siddharth Deshmukh', phone: '919876543212', joinedDate: '2026-09-10', removedDate: null },
-      { roll: 'KPA-104', name: 'Ananya Jadhav', phone: '919876543213', joinedDate: '2026-09-15', removedDate: null }
+      { roll: 'JEE-101', name: 'Aarav Patil', phone: '919876543210', joinedDate: '2026-09-01', removedDate: null },
+      { roll: 'NEET-102', name: 'Priya Sharma', phone: '919876543211', joinedDate: '2026-09-01', removedDate: null },
+      { roll: 'CET-103', name: 'Siddharth Deshmukh', phone: '919876543212', joinedDate: '2026-09-10', removedDate: null },
+      { roll: 'JEE-104', name: 'Ananya Jadhav', phone: '919876543213', joinedDate: '2026-09-15', removedDate: null }
     ];
 
     let attendanceData = JSON.parse(localStorage.getItem('kpa_attendance')) || {};
@@ -553,15 +569,15 @@
       localStorage.setItem('kpa_attendance', JSON.stringify(attendanceData));
     }
 
-    // Non-intrusive Toast Notifications replacing alert()
+    // Non-intrusive Toast Notifications
     function showToast(message, type = 'info') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
       
-      const bg = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-rose-600' : 'bg-koyana-800';
+      const bg = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-rose-600' : 'bg-indigo-900';
       const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
 
-      toast.className = `${bg} text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto`;
+      toast.className = `${bg} text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto border border-white/10`;
       toast.innerHTML = `<i class="fa-solid ${icon}"></i><span>${message}</span>`;
       
       container.appendChild(toast);
@@ -581,7 +597,7 @@
       onDateChange();
     }
 
-    // Date Scoping Helper: Checks if student was active on date
+    // Date Scoping Helper
     function isStudentActiveOnDate(student, dateStr) {
       if (student.joinedDate && dateStr < student.joinedDate) return false;
       if (student.removedDate && dateStr >= student.removedDate) return false;
@@ -619,7 +635,7 @@
       const joinedDate = document.getElementById('joinedDate').value;
 
       if (students.some(s => s.roll.toLowerCase() === roll.toLowerCase())) {
-        showToast(`Roll Number "${roll}" already exists in Koyana Pattern Academy database!`, 'error');
+        showToast(`Roll Number "${roll}" already exists in Koyana Academy database!`, 'error');
         return;
       }
 
@@ -706,7 +722,7 @@
       if (activeStudents.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="4" class="text-center p-8 text-slate-400">
+            <td colspan="4" class="text-center p-8 text-slate-500">
               <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>
               No active students found for date ${activeDate}.
             </td>
@@ -719,29 +735,29 @@
         const isAbsent = status === 'Absent';
 
         const tr = document.createElement('tr');
-        tr.className = `transition ${isAbsent ? 'bg-rose-50/60' : 'hover:bg-slate-50'}`;
+        tr.className = `transition ${isAbsent ? 'bg-rose-500/10' : 'hover:bg-slate-900/40'}`;
         tr.innerHTML = `
-          <td class="p-3 font-semibold text-slate-800 font-mono text-xs">${student.roll}</td>
+          <td class="p-3 font-semibold text-cyan-400 font-mono text-xs">${student.roll}</td>
           <td class="p-3">
-            <span class="font-medium ${isAbsent ? 'text-rose-700 font-bold' : 'text-slate-800'}">${student.name}</span>
-            <div class="text-[10px] text-slate-400">Joined: ${student.joinedDate}</div>
+            <span class="font-medium ${isAbsent ? 'text-rose-400 font-bold' : 'text-slate-200'}">${student.name}</span>
+            <div class="text-[10px] text-slate-500">Joined: ${student.joinedDate}</div>
           </td>
           <td class="p-3">
-            <div class="inline-flex rounded-lg shadow-sm">
-              <button onclick="setAttendance('${student.roll}', 'Present')" class="px-3 py-1 text-xs rounded-l-lg font-bold transition ${status === 'Present' ? 'bg-emerald-600 text-white shadow' : 'bg-slate-200 text-slate-600 hover:bg-emerald-100'}">
+            <div class="inline-flex rounded-lg p-0.5 bg-slate-900 border border-slate-800">
+              <button onclick="setAttendance('${student.roll}', 'Present')" class="px-3 py-1 text-xs rounded-md font-bold transition ${status === 'Present' ? 'bg-emerald-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
                 Present
               </button>
-              <button onclick="setAttendance('${student.roll}', 'Absent')" class="px-3 py-1 text-xs rounded-r-lg font-bold transition ${status === 'Absent' ? 'bg-rose-600 text-white shadow' : 'bg-slate-200 text-slate-600 hover:bg-rose-100'}">
+              <button onclick="setAttendance('${student.roll}', 'Absent')" class="px-3 py-1 text-xs rounded-md font-bold transition ${status === 'Absent' ? 'bg-rose-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
                 Absent
               </button>
             </div>
           </td>
           <td class="p-3 text-center">
             <div class="flex items-center justify-center gap-1.5">
-              <button onclick="openStudentSearchModal('${student.roll}')" class="bg-indigo-50 text-koyana-800 hover:bg-indigo-100 text-xs px-2.5 py-1 rounded-lg font-semibold border border-indigo-200 transition" title="View Profile & Stats">
+              <button onclick="openStudentSearchModal('${student.roll}')" class="bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 text-xs px-2.5 py-1 rounded-lg font-semibold border border-indigo-500/30 transition" title="View Profile & Stats">
                 <i class="fa-solid fa-chart-line"></i>
               </button>
-              <button onclick="askRemoveStudent('${student.roll}')" class="bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs px-2.5 py-1 rounded-lg font-semibold border border-rose-200 transition" title="Remove student from this date onwards">
+              <button onclick="askRemoveStudent('${student.roll}')" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs px-2.5 py-1 rounded-lg font-semibold border border-rose-500/30 transition" title="Remove student from this date onwards">
                 <i class="fa-solid fa-user-minus"></i>
               </button>
             </div>
@@ -798,7 +814,7 @@
         return;
       }
 
-      const msg = `KOYANA PATTERN ACADEMY ALERT%0A%0AStudent: *${current.name}* (${current.roll})%0ADate: *${activeDate}*%0AStatus: *ABSENT*%0AOverall Attendance: *${stats.percent}%*%0A%0APlease contact Academy Office for queries.`;
+      const msg = `KOYANA ACADEMY ALERT%0A%0AStudent: *${current.name}* (${current.roll})%0ADate: *${activeDate}*%0AStatus: *ABSENT*%0AOverall Attendance: *${stats.percent}%*%0A%0APlease contact Academy Office for queries.`;
       window.open(`https://wa.me/${current.phone}?text=${msg}`, '_blank');
 
       whatsappQueueIndex++;
@@ -875,22 +891,23 @@
       document.getElementById('indivAbsent').innerText = stats.absent;
 
       document.getElementById('indivStatusTag').innerHTML = stats.student.removedDate ? 
-        `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">Discharged on ${stats.student.removedDate}</span>` : 
-        `<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Active Student</span>`;
+        `<span class="text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">Discharged on ${stats.student.removedDate}</span>` : 
+        `<span class="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Active Student</span>`;
 
       const tbody = document.getElementById('indivLogsBody');
       tbody.innerHTML = '';
 
       if (stats.logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-slate-400">No session logs found for selected timeframe.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-slate-500">No session logs found for selected timeframe.</td></tr>`;
         return;
       }
 
       stats.logs.forEach(log => {
         const tr = document.createElement('tr');
+        tr.className = "border-b border-slate-800/80";
         tr.innerHTML = `
-          <td class="p-2.5 border-b font-medium text-slate-700">${log.date}</td>
-          <td class="p-2.5 border-b font-bold ${log.status === 'Present' ? 'text-emerald-600' : 'text-rose-600'}">${log.status}</td>
+          <td class="p-2.5 font-medium text-slate-300">${log.date}</td>
+          <td class="p-2.5 font-bold ${log.status === 'Present' ? 'text-emerald-400' : 'text-rose-400'}">${log.status}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -906,7 +923,7 @@
         return;
       }
 
-      const msg = `KOYANA PATTERN ACADEMY REPORT%0A%0AStudent: ${stats.student.name} (${stats.student.roll})%0AHorizon: ${timeframe.toUpperCase()}%0AOverall Attendance: ${stats.percent}% (${stats.present}/${stats.total} sessions present)`;
+      const msg = `KOYANA ACADEMY REPORT%0A%0AStudent: ${stats.student.name} (${stats.student.roll})%0AHorizon: ${timeframe.toUpperCase()}%0AOverall Attendance: ${stats.percent}% (${stats.present}/${stats.total} sessions present)`;
       window.open(`https://wa.me/${stats.student.phone}?text=${msg}`, '_blank');
     }
 
@@ -915,7 +932,7 @@
       const element = document.getElementById('individualStudentPrintArea');
       const opt = {
         margin: 0.5,
-        filename: `KPA_Student_Report_${roll}.pdf`,
+        filename: `Koyana_Academy_Student_Report_${roll}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
@@ -929,9 +946,9 @@
       ['Day', 'Week', 'Month', 'Year'].forEach(p => {
         const btn = document.getElementById(`btnPeriod${p}`);
         if (p.toLowerCase() === period) {
-          btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-white shadow-sm text-koyana-900 transition";
+          btn.className = "px-3 py-1.5 text-xs font-extrabold rounded-full bg-gradient-pill text-slate-950 transition";
         } else {
-          btn.className = "px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
+          btn.className = "px-3 py-1.5 text-xs font-semibold rounded-full text-slate-400 hover:text-white transition";
         }
       });
 
@@ -946,9 +963,9 @@
         type: 'doughnut',
         data: {
           labels: ['Present Sessions', 'Absent Sessions'],
-          datasets: [{ data: [0, 0], backgroundColor: ['#059669', '#e11d48'], borderWidth: 0 }]
+          datasets: [{ data: [0, 0], backgroundColor: ['#06b6d4', '#f43f5e'], borderWidth: 0 }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } } }
       });
 
       const ctxLine = document.getElementById('lineChart').getContext('2d');
@@ -959,13 +976,20 @@
           datasets: [{
             label: 'Class Attendance %',
             data: [],
-            borderColor: '#1e40af',
-            backgroundColor: 'rgba(30, 64, 175, 0.1)',
+            borderColor: '#818cf8',
+            backgroundColor: 'rgba(129, 140, 248, 0.1)',
             tension: 0.3,
             fill: true
           }]
         },
-        options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
+        options: { 
+          responsive: true, 
+          maintainAspectRatio: false, 
+          scales: { 
+            y: { min: 0, max: 100, ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+            x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+          } 
+        }
       });
 
       updateCharts();
@@ -1025,7 +1049,6 @@
         return;
       }
 
-      // Populate Official PDF Template
       document.getElementById('pdfReportScope').innerText = `Date: ${activeDate} (${activeAnalyticsPeriod.toUpperCase()} view)`;
       document.getElementById('pdfGeneratedDate').innerText = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
       
@@ -1061,14 +1084,13 @@
 
       document.querySelectorAll('.pdfCurrentDate').forEach(el => el.innerText = todayStr);
 
-      // Render PDF with html2pdf.js using precision document formatting
       const element = document.getElementById('officialPdfPrintArea');
       
-      showToast("Generating official Koyana Pattern Academy PDF Report...", "info");
+      showToast("Generating official Koyana Academy PDF Report...", "info");
 
       const opt = {
         margin: [0.3, 0.3, 0.3, 0.3],
-        filename: `Koyana_Pattern_Academy_Attendance_${activeDate}.pdf`,
+        filename: `Koyana_Academy_Attendance_${activeDate}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, logging: false },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
